@@ -42,7 +42,7 @@ $(function(){
         links.forEach(function (l) {
             l.remove();
         })
-        draw.createLinks(network);
+        links = draw.createLinks(network);
     })
         
 });
