@@ -1,6 +1,6 @@
 <html>
     <head>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <link rel="stylesheet" href="./bower_components/bootstrap/dist/css/bootstrap.min.css">
         <link rel="stylesheet" href="style.css" />
         <title> Gathering </title>
     </head>
@@ -9,6 +9,44 @@
             <div class="row">
                 <div class="col-xs-12">
                     <h1 class="title">Gathering</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6">
+                    <h4>Nodes:&nbsp;<small class="nodes"></small> 
+                    Agents:&nbsp;<small id="agents"></small></h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <div class="col-xs-4">
+                                <div class="input-group">
+                                    <div class="input-group-addon">Rounds</div>
+                                    <input type="number" class="form-control" value="6" id="rounds">
+                                </div>
+                            </div>
+                            <div class="col-xs-2">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" class="checkbox-inline"> 
+                                        X <small class="nodes"></small>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-xs-3">
+                                <button type="button" class="btn btn-default" id="execution">Execution</button>
+                            </div>
+                        </div>   
+                    </form>
+                </div>
+                <div class="col-xs-12">
+                    <h4>Current Round: <small id="reps"></span><small>n</span></h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
                     <div id="holder"></div>
                 </div>
             </div>
@@ -17,25 +55,13 @@
                     <button type="button" class="btn btn-default" id="round">Start round</button>
                     <button type="button" class="btn btn-default" id="link">Re-Link</button>
                 </div>
-                <svg width="190" height="160" xmlns="http://www.w3.org/2000/svg">
-
-  <path d="M10 10 C 30 60, 40 20, 50 10" stroke="black" fill="transparent"/>
-  <path d="M70 10 C 70 20, 120 20, 120 10" stroke="black" fill="transparent"/>
-  <path d="M130 10 C 120 20, 180 20, 170 10" stroke="black" fill="transparent"/>
-  <path d="M10 60 C 20 80, 40 80, 50 60" stroke="black" fill="transparent"/>
-  <path d="M70 60 C 70 80, 110 80, 110 60" stroke="black" fill="transparent"/>
-  <path d="M130 60 C 120 80, 180 80, 170 60" stroke="black" fill="transparent"/>
-  <path d="M10 110 C 20 140, 40 140, 50 110" stroke="black" fill="transparent"/>
-  <path d="M70 110 C 70 140, 110 140, 110 110" stroke="black" fill="transparent"/>
-  <path d="M130 110 C 120 140, 180 140, 170 110" stroke="black" fill="transparent"/>
-
-</svg>
             </div>
             
+            
         </div>
-        <script data-require="jquery@*" data-semver="3.1.1" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-        <script data-require="raphael@2.1.0" data-semver="2.1.0" src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+        <script src="./bower_components/jquery/dist/jquery.min.js"></script>
+        <script src="./bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="./bower_components/raphael/raphael.min.js"></script>
         <script src="model.js" type="text/javascript"></script>
         <script src="ring.js" type="text/javascript"></script>
         <script src="draw.js" type="text/javascript"></script>

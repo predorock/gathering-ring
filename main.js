@@ -28,13 +28,20 @@ $(function(){
         draw.createAgents(agents);
     });
 
-    $('#round').click(function (ev) {
+    function moveAgents () {
         agents.forEach(function(agent) {
             var to = agent.move()
             if (to !== null) {
                 draw.moveAgent(agent.paint, to);
             }
-        });        
+        });  
+    }
+
+    $("#agents").text(agents.length);
+    $(".nodes").text(network.length);
+
+    $('#round').click(function (ev) {
+        moveAgents();      
     });
 
     $('#link').click(function () {
@@ -43,6 +50,30 @@ $(function(){
             l.remove();
         })
         links = draw.createLinks(network);
-    })
+    });
+
+    $("#execution").click(function (ev) {
+        var rounds = parseInt($("#rounds").val());
+        if (rounds && Number.isInteger(rounds) && rounds > 0) {
+            eagerLoop(function (reps) {
+                $("#reps").text((rounds - (reps - 1)) - 1);
+                moveAgents();
+            }, rounds, 2000);
+        }
+    });
         
 });
+
+function eagerLoop (fn, reps, delay) {
+    fn(reps);
+    timeoutLoop(fn, reps-1, delay);
+}
+
+function timeoutLoop(fn, reps, delay) {
+  if (reps > 0) {
+    setTimeout(function() {
+                fn(reps);
+                timeoutLoop(fn, reps-1, delay);
+    }, delay);
+  }
+}
