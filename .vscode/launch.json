@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Debug Gathering",
+            "url": "http://localhost:6776/index.html",
+            "webRoot": "${workspaceRoot}"
+        }
+    ]
+}

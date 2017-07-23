@@ -4,11 +4,16 @@ const DIRECTIONS = {
 }
 
 class Node {
-    constructor(x, y) {
+    constructor(name, x, y) {
+        this.name = name;
         this.x = x;
         this.y = y;
         this.next = null;
         this.prev = null;
+    }
+
+    getName () {
+        return this.name;
     }
 
     setNext (next) {
@@ -30,13 +35,21 @@ class Node {
         this.next = null;
         this.prev = null;
     }
+    toString () {
+        return this.getName() + ' (' + this.x + ', ' + this.y + ')';
+    }
 }
 
 class Agent {
     
-    constructor(initialNode, initDirection) {
+    constructor(name, initialNode, initDirection) {
+        this.name = name;
         this.currentNode = initialNode;
         this.direction = initDirection;
+    }
+
+    getName () {
+        return this.name;
     }
 
     getCurrentNode () {
@@ -62,5 +75,9 @@ class Agent {
             this.currentNode = to;
         }
         return to;
+    }
+
+    toString () {
+        return "Agent " + this.name;
     }
 }

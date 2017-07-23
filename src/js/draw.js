@@ -5,6 +5,14 @@ class GraphicAgent {
         this.graphicObject = graphicObject;
     }
 
+    getName () {
+        return this.agent.getName();
+    }
+
+    getCurrentNode() {
+        return this.agent.getCurrentNode();
+    }
+
     getGraphic () {
         return this.graphicObject;
     }
@@ -16,6 +24,10 @@ class GraphicAgent {
     setDirection (dir) {
         this.agent.setDirection(dir);
     }
+
+    toString () {
+        return this.agent.toString()
+    }
 }
 
 class GraphicNode {
@@ -25,6 +37,10 @@ class GraphicNode {
         this.x = node.x;
         this.y = node.y;
         this.graphicObject = graphicObject;
+    }
+
+    getName () {
+        return this.node.getName();
     }
 
     getGraphic () {
@@ -49,6 +65,10 @@ class GraphicNode {
 
     reset () {
         return this.node.reset();
+    }
+
+    toString () {
+        return this.node.toString()
     }
 }
 
@@ -102,14 +122,21 @@ var draw = (function (Raphael) {
     }
 
     function _drawNode (node) {
-        _ctx.text(node.x + 40, node.y, '(' + node.x + ', ' + node.y +')');
-        return _ctx.circle(node.x, node.y, 8)
-            .attr({stroke: "none", fill: "#666"});
+        
+        return _ctx.set(
+            _ctx.circle(node.x, node.y, 8)
+                .attr({stroke: "none", fill: "#666"}),
+            _ctx.text(node.x + 40, node.y, node.toString())
+        )
     }
 
-    function _drawAgent (agentNode) {
-        return _ctx.circle(agentNode.x, agentNode.y,10)
-            .attr({stroke: "#fff", "stroke-width": 4});
+    function _drawAgent (agent, agentNode) {
+        return _ctx.set(
+            _ctx.circle(agentNode.x, agentNode.y,10)
+                .attr({stroke: "#fff", "stroke-width": 4}),
+            _ctx.text(agentNode.x, agentNode.y - 40, agent.toString())
+                .attr({fill: "#fff"})
+        )
     }
 
     function _drawLink (from, to, color, changeFocus) {
@@ -145,9 +172,10 @@ var draw = (function (Raphael) {
     }
 
     function _moveAgent (agent, to) {
-        agent.stop()
+        agent.getGraphic()
+            .stop()
             .animate({
-                "100%": {cx: to.x, cy: to.y, easing:''}
+                "100%": {cx: to.x, cy: to.y, x: to.x, y: to.y - 40, easing:''}
             }, 1000);
     }
 

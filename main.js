@@ -1,16 +1,16 @@
 $(function(){
 
-    var center = new Node (200, 250);
+    var center = new Node ("center", 200, 250);
     var network = [
-        new Node (200, 100),
-        new Node (95, 145),
-        new Node (50, 250),
-        new Node (95, 355),
-        new Node (200, 400),
+        new Node ("I", 200, 100),
+        new Node ("B", 95, 145),
+        new Node ("C", 50, 250),
+        new Node ("D", 95, 355),
+        new Node ("E", 200, 400),
         //sx
-        new Node (305, 355),
-        new Node (350, 250),
-        new Node (305, 145),
+        new Node ("F", 305, 355),
+        new Node ("G", 350, 250),
+        new Node ("H", 305, 145),
     ];
     var agents = [];
 
@@ -22,7 +22,7 @@ $(function(){
 
     ring.linkNodes(network);
 
-    var r = Raphael(function () {
+    Raphael(function () {
         var ctx = Raphael("holder");
         draw.init(ctx);
 
@@ -46,30 +46,32 @@ $(function(){
             paper.nodes.push(gNode);
             paper.links.push(linkTo);
             paper.links.push(linkFrom);
-
-            if (idx % 2 == 0) {
-                paper.agents.push(
-                    new GraphicAgent(
-                        new Agent(gNode, DIRECTIONS.LEFT), 
-                        draw.drawAgent(node)
-                    )
-                )
-            }
         });
 
-        ring.linkNodes(paper.nodes);
+        paper.agents = generateAgents(4, paper.nodes);
+
         $(".agents").text(paper.agents.length);
         $(".nodes").text(paper.nodes.length);
+
+        //legenda
+        ctx.path([["M", 400, 30], ["L", 450, 30]])
+        .attr({stroke: "red", "stroke-width": 2, "stroke-linecap": "round"})
+        ctx.text(470, 28, "out link").attr({fill:"white"});
+
+        ctx.path([["M", 400, 60], ["L", 450, 60]])
+        .attr({stroke: "green", "stroke-width": 2, "stroke-linecap": "round"})
+        ctx.text(470, 58, "in link").attr({fill:"white"});
+        console.log("paper", paper);
     });
     
 
     //UI SETUP -----------------------------------------------------
     var rounds = 0;
-    function moveAgents () {
-        paper.agents.forEach(function(agent) {
+    function moveAgents (agents) {
+        agents.forEach(function(agent) {
             var to = agent.move()
             if (to !== null) {
-                draw.moveAgent(agent.getGraphic(), to);
+                draw.moveAgent(agent, to);
             }
         });  
     }
@@ -89,7 +91,7 @@ $(function(){
     $('button[name=\'execute-round\']').click(function (ev) {
         incrementRounds();
         updateRounds();
-        moveAgents();      
+        moveAgents(paper.agents);      
     });
 
     $('button[name=\'execute-more-rounds\']').click(function (ev) {
@@ -99,7 +101,7 @@ $(function(){
             eagerLoop(function (reps) {
                 incrementRounds();
                 updateRounds();
-                moveAgents();
+                moveAgents(paper.agents);
             }, roundsToDo, 2000);
         }
     });
@@ -126,6 +128,27 @@ $(function(){
     updateRounds();
         
 });
+
+function generateAgents (numOfAgents, nodes) {
+    var agents = [];
+    if (numOfAgents > nodes.length /2) {
+        throw new Error ("number of agents is too high");
+    } else {
+        
+        var positions = nodes.map(function(n, i) {return i});
+
+        agents = positions
+            .shuffle()
+            .slice(0, numOfAgents)
+            .map(function(pos, idx) {
+                var newAgent = new Agent("A" + idx, nodes[pos], DIRECTIONS.LEFT);
+                return new GraphicAgent(newAgent, 
+                    draw.drawAgent(newAgent, nodes[pos])
+                )
+            });
+    }
+    return agents;
+}
 
 function eagerLoop (fn, reps, delay) {
     fn(reps);
