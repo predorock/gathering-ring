@@ -22,7 +22,7 @@ $(function(){
 
     ring.linkNodes(network);
 
-    Raphael(function () {
+    var r = Raphael(function () {
         var ctx = Raphael("holder");
         draw.init(ctx);
 
@@ -58,8 +58,13 @@ $(function(){
         });
 
         ring.linkNodes(paper.nodes);
+        $(".agents").text(paper.agents.length);
+        $(".nodes").text(paper.nodes.length);
     });
+    
 
+    //UI SETUP -----------------------------------------------------
+    var rounds = 0;
     function moveAgents () {
         paper.agents.forEach(function(agent) {
             var to = agent.move()
@@ -69,14 +74,37 @@ $(function(){
         });  
     }
 
-    $("#agents").text(agents.length);
-    $(".nodes").text(network.length);
+    function updateRounds() {
+        $(".rounds-number").text(rounds);
+    }
 
-    $('#round').click(function (ev) {
+    function incrementRounds () {
+        rounds++;
+    }
+
+    function resetRounds(){
+        rounds--;
+    }
+
+    $('button[name=\'execute-round\']').click(function (ev) {
+        incrementRounds();
+        updateRounds();
         moveAgents();      
     });
 
-    $('#link').click(function () {
+    $('button[name=\'execute-more-rounds\']').click(function (ev) {
+        var roundsToDo = $("input[type=\'number\'][name=\'rounds-to-do\']").val();
+        roundsToDo = parseInt(roundsToDo);
+        if (roundsToDo && Number.isInteger(roundsToDo) && roundsToDo > 0) {
+            eagerLoop(function (reps) {
+                incrementRounds();
+                updateRounds();
+                moveAgents();
+            }, roundsToDo, 2000);
+        }
+    });
+
+    $('button[name=\'reset\']').click(function () {
         paper.links.forEach(function (link) {
             if (link) {
                 link.show();
@@ -88,15 +116,14 @@ $(function(){
         ring.linkNodes(paper.nodes);
     });
 
-    $("#execution").click(function (ev) {
-        var rounds = parseInt($("#rounds").val());
-        if (rounds && Number.isInteger(rounds) && rounds > 0) {
-            eagerLoop(function (reps) {
-                $("#reps").text((rounds - (reps - 1)) - 1);
-                moveAgents();
-            }, rounds, 2000);
-        }
+    $('input[type=\'radio\'][name=\'agents-direction\']').change(function(ev) {
+        var dir = parseInt($(this).val());
+        paper.agents.forEach(function(agent) {
+            agent.setDirection(dir);
+        });
     });
+
+    updateRounds();
         
 });
 

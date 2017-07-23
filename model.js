@@ -43,6 +43,12 @@ class Agent {
         return this.currentNode;
     }
 
+    setDirection(direction) {
+        if (direction === DIRECTIONS.LEFT || direction === DIRECTIONS.RIGHT) {
+            this.direction = direction;
+        }
+    }
+
     move () {
         var to = null;
         switch(this.direction) {

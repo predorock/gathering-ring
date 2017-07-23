@@ -5,11 +5,14 @@ body {
     background: #333;
     color: #fff;
 }
+.section {
+    margin-top: 20px;
+}
 #holder {
     border: 1px solid #fff;
     height: 480px;
     margin:15px 0;
-    width: 470px;
+    width: 640px;
 }
 #copy {
     bottom: 0;

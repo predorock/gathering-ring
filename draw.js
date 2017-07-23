@@ -12,6 +12,10 @@ class GraphicAgent {
     move () {
         return this.agent.move();
     }
+
+    setDirection (dir) {
+        this.agent.setDirection(dir);
+    }
 }
 
 class GraphicNode {

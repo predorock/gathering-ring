@@ -12,9 +12,15 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-xs-6">
-                    <h4>Nodes:&nbsp;<small class="nodes"></small> 
-                    Agents:&nbsp;<small id="agents"></small></h4>
+                <div class="col-xs-12">
+                    <h4>
+                        Nodes:&nbsp;
+                        <small class="nodes"></small> 
+                        Agents:&nbsp;
+                        <small class="agents"></small>
+                        Current Round:&nbsp;
+                        <small class="rounds-number"></small>
+                    </h4>
                 </div>
             </div>
 
@@ -25,25 +31,35 @@
                             <div class="col-xs-4">
                                 <div class="input-group">
                                     <div class="input-group-addon">Rounds</div>
-                                    <input type="number" class="form-control" value="6" id="rounds">
-                                </div>
-                            </div>
-                            <div class="col-xs-2">
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox" class="checkbox-inline"> 
-                                        X <small class="nodes"></small>
-                                    </label>
+                                    <input type="number" name="rounds-to-do" class="form-control" value="6">
                                 </div>
                             </div>
                             <div class="col-xs-3">
-                                <button type="button" class="btn btn-default" id="execution">Execution</button>
+                                <button type="button"
+                                    name="execute-more-rounds"
+                                    class="btn btn-default">Execute More Rounds</button>
                             </div>
                         </div>   
                     </form>
                 </div>
                 <div class="col-xs-12">
-                    <h4>Current Round: <small id="reps"></span><small>n</span></h4>
+                    Agents direction
+                    <label class="checkbox-inline">
+                        <input type="radio" name="agents-direction" id="direction-left" value="0" checked>
+                        Left
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="radio" name="agents-direction" id="direction-right" value="1">
+                        Right
+                    </label>
+                </div>
+            </div>
+            <div class="row section">
+                <div class="col-xs-12">
+                    <form class="form-horizontal">
+                        <button type="button" name="execute-round" class="btn btn-default">Execute Round</button>
+                        <button type="button" name="reset" class="btn btn-default">Reset</button>
+                    </form>
                 </div>
             </div>
             <div class="row">
@@ -51,14 +67,6 @@
                     <div id="holder"></div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-xs-12">
-                    <button type="button" class="btn btn-default" id="round">Start round</button>
-                    <button type="button" class="btn btn-default" id="link">Re-Link</button>
-                </div>
-            </div>
-            
-            
         </div>
         <script src="./bower_components/jquery/dist/jquery.min.js"></script>
         <script src="./bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
