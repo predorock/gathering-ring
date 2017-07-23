@@ -122,11 +122,13 @@ var draw = (function (Raphael) {
     }
 
     function _drawNode (node) {
-        
+        var textP = _movePoint(_center, node, 30);
+        var textAlign = node.x > _center.x ? 'start' : (node.x < _center.x ? 'end': 'middle');
         return _ctx.set(
             _ctx.circle(node.x, node.y, 8)
                 .attr({stroke: "none", fill: "#666"}),
-            _ctx.text(node.x + 40, node.y, node.toString())
+            _ctx.text(textP.x, textP.y, node.toString())
+                .attr({'text-anchor': textAlign})
         )
     }
 
@@ -135,7 +137,7 @@ var draw = (function (Raphael) {
             _ctx.circle(agentNode.x, agentNode.y,10)
                 .attr({stroke: "#fff", "stroke-width": 4}),
             _ctx.text(agentNode.x, agentNode.y - 40, agent.toString())
-                .attr({fill: "#fff"})
+                .attr({fill: "#fff", 'text-anchor': 'start'})
         )
     }
 

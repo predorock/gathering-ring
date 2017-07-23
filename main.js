@@ -1,16 +1,16 @@
 $(function(){
 
-    var center = new Node ("center", 200, 250);
+    var center = new Node ("center", 250, 250);
     var network = [
-        new Node ("I", 200, 100),
-        new Node ("B", 95, 145),
-        new Node ("C", 50, 250),
-        new Node ("D", 95, 355),
-        new Node ("E", 200, 400),
+        new Node ("I", 250, 100),
+        new Node ("B", 145, 145),
+        new Node ("C", 100, 250),
+        new Node ("D", 145, 355),
+        new Node ("E", 250, 400),
         //sx
-        new Node ("F", 305, 355),
-        new Node ("G", 350, 250),
-        new Node ("H", 305, 145),
+        new Node ("F", 355, 355),
+        new Node ("G", 400, 250),
+        new Node ("H", 355, 145),
     ];
     var agents = [];
 
@@ -20,10 +20,14 @@ $(function(){
         links: []
     }
 
+    var ctx = null;
+    var statusLegenda = null;
+
     ring.linkNodes(network);
 
     Raphael(function () {
-        var ctx = Raphael("holder");
+        ctx = Raphael("holder");
+        statusLegenda = ctx.set();
         draw.init(ctx);
 
         draw.setCenter(center);
@@ -54,15 +58,29 @@ $(function(){
         $(".nodes").text(paper.nodes.length);
 
         //legenda
-        ctx.path([["M", 400, 30], ["L", 450, 30]])
-        .attr({stroke: "red", "stroke-width": 2, "stroke-linecap": "round"})
-        ctx.text(470, 28, "out link").attr({fill:"white"});
+        ctx.path([["M", 500, 30], ["L", 550, 30]])
+            .attr({stroke: "red", "stroke-width": 2, "stroke-linecap": "round"})
+        ctx.text(560, 28, "out link")
+            .attr({'text-anchor': 'start', fill:"white"});
 
-        ctx.path([["M", 400, 60], ["L", 450, 60]])
-        .attr({stroke: "green", "stroke-width": 2, "stroke-linecap": "round"})
-        ctx.text(470, 58, "in link").attr({fill:"white"});
-        console.log("paper", paper);
+        ctx.path([["M", 500, 60], ["L", 550, 60]])
+            .attr({stroke: "green", "stroke-width": 2, "stroke-linecap": "round"})
+        ctx.text(560, 58, "in link")
+            .attr({'text-anchor': 'start', fill:"white"});
+
+        refreshStatus(ctx);
     });
+
+    function refreshStatus() {
+        statusLegenda.remove();
+        paper.agents.forEach(function(agent, idx) {
+            var text = agent.toString() + ' ON ' + agent.getCurrentNode().toString();
+            statusLegenda.push(
+                ctx.text(500, 90 + 30*idx, text)
+            );
+        });
+        statusLegenda.attr({'text-anchor': 'start', fill: "#fff"});
+    }
     
 
     //UI SETUP -----------------------------------------------------
@@ -74,6 +92,7 @@ $(function(){
                 draw.moveAgent(agent, to);
             }
         });  
+        refreshStatus(ctx);
     }
 
     function updateRounds() {
