@@ -1,16 +1,100 @@
-var draw = (function (Raphael, ring) {
+class GraphicAgent {
+
+    constructor (agent, graphicObject) {
+        this.agent = agent;
+        this.graphicObject = graphicObject;
+    }
+
+    getGraphic () {
+        return this.graphicObject;
+    }
+
+    move () {
+        return this.agent.move();
+    }
+}
+
+class GraphicNode {
+    
+    constructor(node, graphicObject) {
+        this.node = node;
+        this.x = node.x;
+        this.y = node.y;
+        this.graphicObject = graphicObject;
+    }
+
+    getGraphic () {
+        return this.graphicObject;
+    }
+
+    setNext (next) {
+        this.node.setNext(next);
+    }
+
+    setPrev (prev) {
+        this.node.setPrev(prev);
+    }
+
+    getNext () {
+        return this.node.getNext()
+    }
+
+    getPrev () {
+        return this.node.getPrev();
+    }
+
+    reset () {
+        return this.node.reset();
+    }
+}
+
+class GraphicLink {
+    constructor (link, nodeA, nodeB) {
+        this.link = link;
+        this.nodeA = nodeA;
+        this.nodeB = nodeB;
+    }
+}
+
+var draw = (function (Raphael) {
     
     var _ctx = null;
-    var _ring = [];
-    var _agents = [];
-    var _links = [];
+    var _center = null;
+    var _focusDistance = 60;
     
     return {
-        init: init,
-        createRing: createRing,
-        createLinks:createLinks,
-        createAgents: createAgents,
-        moveAgent: moveAgent
+        init:        _init,
+        setCenter:   _setCenter,
+        drawAgent:   _drawAgent,
+        drawNode:    _drawNode,
+        drawLink:    _drawLink,
+        removeLink:  _removeLink,
+        moveAgent:   _moveAgent,
+        focusPoints: _focusPoints,
+        setFocusDistance: _setFocusDistance
+    }
+
+    function _distance (a,b) {
+        return Math.sqrt(
+            Math.abs(Math.pow(a.x - b.x, 2)) +
+            Math.abs(Math.pow(a.y - b.y, 2))
+        );
+    }
+
+    function _middlePoint (a, b) {
+        return {
+            x: (a.x + b.x)/2,
+            y: (a.y + b.y)/2
+        };
+    }
+
+    function _movePoint(a, b, amount) {
+        var d = _distance(a, b),
+            ratio = (d + amount)/d;
+        return {
+            x: ((1 - ratio) * a.x) + (ratio * b.x),
+            y: ((1 - ratio) * a.y) + (ratio * b.y)
+        };
     }
 
     function _drawNode (node) {
@@ -20,20 +104,29 @@ var draw = (function (Raphael, ring) {
     }
 
     function _drawAgent (agentNode) {
-        return _ctx.circle(
-            agentNode.x,
-            agentNode.y,
-            10
-        ).attr({stroke: "#fff", "stroke-width": 4});
+        return _ctx.circle(agentNode.x, agentNode.y,10)
+            .attr({stroke: "#fff", "stroke-width": 4});
     }
 
-    function _drawLink (from, to) {
-        var linkTo = ["M", from.x, " ", from.y].join("");
-            linkTo = [linkTo, "L", to.x, " ", to.y].join("")
-        return _ctx.path(linkTo).attr({stroke: "red", "stroke-width": 3, "stroke-linecap": "round"});
+    function _drawLink (from, to, color, changeFocus) {
+
+        var path  = null;
+        var focus = null;
+        color = color ? color : "red";
+        if (_center !== null) {
+            var f = changeFocus ? -1 : 1;
+            var middle = _middlePoint(from, to);
+            focus  = _movePoint(_center, middle, f * _focusDistance);
+            path = [["M", from.x, from.y], ["Q", focus.x, focus.y, to.x, to.y]];
+        } else {
+            path = [["M", from.x, from.y], ["L", to.x, to.y]];
+        }
+        var link = _ctx.path(path).attr({stroke: color, "stroke-width": 3, "stroke-linecap": "round"});
+        link.focus = focus;
+        return link;
     }
 
-    function init(ctx) {
+    function _init(ctx) {
         if (!ctx) {
             Raphael(function () {
                 _ctx = Raphael("holder");
@@ -43,48 +136,31 @@ var draw = (function (Raphael, ring) {
         }
     }
 
-    function createRing (nodes) {
-        _ring = nodes.map(function (n) {
-            var node = _drawNode(n);
-            n.paint = n;
-            return n;
-        });
-        return _ring;
+    function _setCenter (p) {
+        _center = p;
     }
 
-    function createAgents (agents) {
-        _agents = agents.map(function (agent) {
-            var a = _drawAgent(agent.currentNode);
-            agent.paint = a;
-            return agent;
-        });
-        return _agents;
-    }
-
-    function moveAgent (agent, to) {
+    function _moveAgent (agent, to) {
         agent.stop()
             .animate({
                 "100%": {cx: to.x, cy: to.y, easing:''}
             }, 1000);
     }
-    
-    function createLinks (nodes) {
-        _links = nodes.map(function (node) {
-            var link = _drawLink(node, node.getNext());
 
-            link.node.onclick = function () {
-                ring.removeLink(node);
-                removeLink(node);
-            }
+    function _removeLink (link) {
+        return link.remove();
+    }
 
-            node.link = link;
-            return link;
+    function _focusPoints (links) {
+        return links.map(function (link) {
+            return link.focus;
         });
-        return _links;
     }
 
-    function removeLink (node) {
-        node.link.remove();
+    function _setFocusDistance (x) {
+        if (Number.isInteger(x) && Number.isFinite(x) && x < 100) {
+            _focusDistance = x;
+        }
     }
 
-})(Raphael, ring);
+})(Raphael);

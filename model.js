@@ -9,8 +9,6 @@ class Node {
         this.y = y;
         this.next = null;
         this.prev = null;
-        this.paint = null;
-        this.link = null;
     }
 
     setNext (next) {
@@ -28,6 +26,10 @@ class Node {
     getPrev () {
         return this.prev;
     }
+    reset () {
+        this.next = null;
+        this.prev = null;
+    }
 }
 
 class Agent {
@@ -35,7 +37,10 @@ class Agent {
     constructor(initialNode, initDirection) {
         this.currentNode = initialNode;
         this.direction = initDirection;
-        this.paint = null;
+    }
+
+    getCurrentNode () {
+        return this.currentNode;
     }
 
     move () {

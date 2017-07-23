@@ -1,10 +1,9 @@
 var ring = (function () {
     return {
-        linkNodes: linkNodes,
-        removeLink: removeLink
+        linkNodes: linkNodes
     }
     
-    function linkNodes (nodes, hook) {
+    function linkNodes (nodes) {
         for(var i = 0; i < nodes.length; i++) {
             var next = null;
             var prev = null;
@@ -15,23 +14,13 @@ var ring = (function () {
             }
 
             if (i == (nodes.length - 1)) {
-            next = nodes[0];
+                next = nodes[0];
             } else {
-            next = nodes[i + 1];
+                next = nodes[i + 1];
             }
 
             nodes[i].setPrev(prev);
             nodes[i].setNext(next);
-
-            if (typeof hook === 'function') {
-                hook(nodes[i], next, prev, i);
-            }
         }
-    }
-
-    function removeLink (node) {
-        var next = node.getNext();
-        next.setPrev(null);
-        node.setNext(null);
-    }
+    };
 })();

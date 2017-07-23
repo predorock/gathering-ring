@@ -1,5 +1,6 @@
 $(function(){
-    var agents = [];
+
+    var center = new Node (200, 250);
     var network = [
         new Node (200, 100),
         new Node (95, 145),
@@ -11,28 +12,59 @@ $(function(){
         new Node (350, 250),
         new Node (305, 145),
     ];
-    var center = new Node (200, 250);
-    var links = [];
+    var agents = [];
 
-    ring.linkNodes(network, function (curr, next, prev, idx) {
-        if (idx % 2 == 0) {
-            agents.push(new Agent(curr, DIRECTIONS.LEFT));
-        }
-    });
+    var paper = {
+        nodes: [],
+        agents: [],
+        links: []
+    }
+
+    ring.linkNodes(network);
 
     Raphael(function () {
         var ctx = Raphael("holder");
         draw.init(ctx);
-        draw.createRing(network);
-        links = draw.createLinks(network);
-        draw.createAgents(agents);
+
+        draw.setCenter(center);
+        ctx.circle(center.x, center.y, 4).attr({stroke:'none', fill:"#0f0"});
+
+        network.forEach(function (node, idx) {
+            var gNode = new GraphicNode(node, draw.drawNode(node));
+            var linkTo = draw.drawLink(node, node.getNext(), "green");
+            var linkFrom = draw.drawLink(node, node.getPrev(), "red", true);
+
+            linkTo.node.onclick = function (ev) {
+                linkTo.hide();
+                node.next = null;
+            }
+
+            linkFrom.node.onclick = function (ev) {
+                linkFrom.hide();
+                node.prev = null;
+            }
+            paper.nodes.push(gNode);
+            paper.links.push(linkTo);
+            paper.links.push(linkFrom);
+
+            if (idx % 2 == 0) {
+                paper.agents.push(
+                    new GraphicAgent(
+                        new Agent(gNode, DIRECTIONS.LEFT), 
+                        draw.drawAgent(node)
+                    )
+                )
+            }
+        });
+
+        ring.linkNodes(paper.nodes);
     });
 
     function moveAgents () {
-        agents.forEach(function(agent) {
+        paper.agents.forEach(function(agent) {
             var to = agent.move()
             if (to !== null) {
-                draw.moveAgent(agent.paint, to);
+                draw.moveAgent(agent.getGraphic(), to);
             }
         });  
     }
@@ -45,11 +77,15 @@ $(function(){
     });
 
     $('#link').click(function () {
-        ring.linkNodes(network);
-        links.forEach(function (l) {
-            l.remove();
-        })
-        links = draw.createLinks(network);
+        paper.links.forEach(function (link) {
+            if (link) {
+                link.show();
+            }
+        });
+        paper.nodes.forEach(function (node) {
+            node.reset();
+        });
+        ring.linkNodes(paper.nodes);
     });
 
     $("#execution").click(function (ev) {
