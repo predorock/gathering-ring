@@ -1,0 +1,9 @@
+{
+  "name": "gathering-ring",
+  "version": "1.0.0",
+  "description": "Gathering problem graphically explained",
+  "main": "index.html",
+  "repository": "https://github.com/predorock/gathering-ring",
+  "author": "Marco Predari <predorock@gmail.com>",
+  "license": "MIT"
+}
